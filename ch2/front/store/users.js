@@ -10,13 +10,15 @@ export const mutations = ({ // 동기적 작업
 });
 
 export const actions = { // 비동기적 작업
-  signUp(context, payload) {
-
+  signUp({commit, state }, payload) {
+    commit('setMe', payload);
   },
-  logIn(context, payload) {
 
+  logIn({commit}, payload) {
+    commit('setMe', payload);
   },
-  logOut(context, payload) {
 
+  logOut({commit}, payload) {
+    commit('setMe', payload);
   },
 }

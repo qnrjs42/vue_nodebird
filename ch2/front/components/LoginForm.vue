@@ -1,5 +1,5 @@
 <template>
-  <v-container> <!-- 패딩 효과 -->
+  <v-container v-if="!me"> <!-- v-container 패딩 효과 -->
     <v-card>
       <v-form ref="form" v-model="valid" @submit.prevent="onSubmitForm">
         <v-container>
@@ -24,6 +24,12 @@
       </v-form>
     </v-card>
   </v-container>
+  <v-container v-else>
+    <v-card>
+      {{me.nickname}}님 로그인되었습니다.
+      <v-btn @click="onLogOut">로그아웃</v-btn>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -42,10 +48,23 @@
         ],
       }
     },
+    computed: {
+      me() {
+        return this.$store.state.users.me; //mutations 호출법
+      }
+    },
     methods: {
       onSubmitForm() {
-        this.$refs.form.validate();
-      }
+        if(this.$refs.form.validate()) {
+          this.$store.dispatch('users/logIn', {
+            email: this.email,
+            nickname: '제로초',
+          });
+        }
+      },
+      onLogOut() {
+        this.$store.dispatch('users/logOut'); // actions 호출법
+      },
     }
 
   }

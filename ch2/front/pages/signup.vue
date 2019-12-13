@@ -80,11 +80,19 @@
     methods: {
       onSubmitForm() {
         if(this.$refs.form.validate()) {
-          alert('회원가입 시도!');
-        } else {
-          alert('폼이 유효하지 않습니다.');
+          this.$store.dispatch('users/signUp', {
+            nickname: this.nickname,
+            email: this.email,
+          })
+          .then(() => { // 실행순서 보장
+            this.$router.push({
+              path: '/',
+            });
+          })
+          .catch(() => { // then 코드 에러 났을 때
+            alert('회원가입 실패');
+          })
         }
-        console.log(this.valid);
       }
     },
 
