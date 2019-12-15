@@ -37,7 +37,7 @@
       ...mapState('users', ['me']),
     },
     methods: {
-      onChangeTextarea(value) {
+      onChangeTextarea(value) { // 성공한 메시지는 입력한 메시지 칸은 지움
         if (value.length) {
           this.hideDetails = true;
           this.success = false;
@@ -46,7 +46,6 @@
       },
       onSubmitForm() {
         if (this.$refs.form.validate()) {
-          console.log("this.$refs.form.validate()");
           this.$store.dispatch('posts/add', {
             content: this.content,
             User: {
