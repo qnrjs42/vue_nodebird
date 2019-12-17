@@ -30,6 +30,7 @@
         return this.$store.state.posts.mainPosts;
       }
     },
+    
   }
 </script>
 

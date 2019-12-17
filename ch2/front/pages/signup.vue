@@ -50,9 +50,16 @@
 <script>
 
   export default {
+    head() {
+      return {
+        title: '회원가입',
+      }
+    },
+
     components: {
 
     },
+
     data() {
       return {
         valid: false, // 밑에 조건들이 다 들어갔는지
@@ -77,6 +84,23 @@
         ],
       }
     },
+
+    computed: {
+      me() {
+        return this.$store.state.users.me;
+      }
+    },
+
+    watch: {
+      me(value, oldValue) {
+        if(value) {
+          this.$router.push({
+            path: '/',
+          })
+        }
+      }
+    },
+
     methods: {
       onSubmitForm() {
         if(this.$refs.form.validate()) {
@@ -96,11 +120,10 @@
       }
     },
 
-    head() {
-      return {
-        title: '회원가입',
-      }
-    }
+    middleware: 'anonymous',
+
+
+
   }
 </script>
 
