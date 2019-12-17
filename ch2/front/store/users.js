@@ -1,7 +1,26 @@
 export const state = () => ({
   me: null,
-  followerList: [],
-  followingList: [],
+  followerList: [{
+    id: 1,
+    nickname: '제로초',
+  }, {
+    id: 2,
+    nickname: '네로',
+  }, {
+    id: 3,
+    nickname: '히어로',
+  }],
+
+  followingList: [{
+    id: 1,
+    nickname: '제로초',
+  }, {
+    id: 2,
+    nickname: '네로',
+  }, {
+    id: 3,
+    nickname: '히어로',
+  }],
 });
 
 export const mutations = ({ // 동기적 작업
@@ -11,7 +30,26 @@ export const mutations = ({ // 동기적 작업
 
   changeNickname(state, payload) {
     state.me.nickname = payload.nickname;
-  }
+  },
+
+  addFollower(state, payload) {
+    state.followerList.push(payload);
+  },
+
+  addFollowing(state, payload) {
+    state.followingList.push(payload);
+  },
+
+  removeFollower(state, payload) {
+    const index = state.followerList.findIndex(v=> v.id === payload.id);
+    state.followerList.splice(index, 1);
+  },
+
+  removeFollowing(state, payload) {
+    const index = state.followingList.findIndex(v=> v.id === payload.id);
+    state.followingList.splice(index, 1);
+  },
+
 });
 
 export const actions = { // 비동기적 작업
@@ -29,5 +67,18 @@ export const actions = { // 비동기적 작업
 
   changeNickname({commit}, payload) {
     commit('changeNickname', payload);
-  }
+  },
+
+  addFollower({commit}, payload) {
+    commit('addFollwer', payload);
+  },
+
+  removeFollowing({commit}, payload) {
+    // 비동기 요청
+    commit('removeFollowing', payload);
+  },
+
+  removeFollower({commit}, payload) {
+    commit('removeFollower', payload);
+  },
 }
