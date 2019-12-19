@@ -14,7 +14,10 @@ db.sequelize.sync();
 passportConfig();
 
 app.use(morgan('dev'));
-app.use(cors('http://localhost:3000'));
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+}));
 /*
   json으로 압축해서 요청
   express는 json을 받으려면 밑 코드를 작성해야함
@@ -26,6 +29,10 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   secret: 'cookiesecret',
+  cookie: {
+    httpOnly: true,
+    secure: false,
+  }
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -51,14 +58,30 @@ app.post('/user', async (req, res, next) => {
     //     message: '이미 회원가입 되어있습니다.',
     //   });
     // }
-    const newUser = await db.User.create({
+    await db.User.create({
       email: req.body.email,
       password: hash,
       nickname: req.body.nickname,
     });
 
+    passport.authenticate('local', (err, user, info) => { // 에러, 성공, 실패
+      if(err) {
+        console.log(err);
+        return next(err);
+      }
+      if(info) {
+        return res.status(401).send(info.reason);
+      }
 
-    return res.status(201).json(newUser); // 201: 성공적으로 생산
+      return req.login(user, async (err) => { // 세션에 사용자 정보 저장
+        if(err) {
+          console.error(err);
+          return next(err);
+        }
+
+        return res.json(user);
+      });
+    })(req, res, next);
   } catch(err) {
     console.log(err);
     return next(err);
@@ -89,6 +112,12 @@ app.post('/user/login', (req, res, next) => {
     });
   })(req, res, next);
 });
+
+app.post('./post', (req, res) => {
+  if(req.isAuthenticated()) {
+
+  }
+})
 
 app.listen(3085, () => {
   console.log(`백엔드 서버 ${3085}번 포트에서 작동중.`);

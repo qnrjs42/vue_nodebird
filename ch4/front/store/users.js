@@ -68,12 +68,32 @@ export const actions = { // 비동기적 작업
       email: payload.email,
       nickname: payload.nickname,
       password: payload.password,
-    });
-    commit('setMe', payload);
+    }, {
+      withCredentials: true, // 서로 다른 서버의 포트에서 쿠키를 연동하여 저장함
+    })
+    .then( (data) => {
+      console.log(data);
+      commit('setMe', payload);
+    })
+    .catch( (err) => {
+      console.error(err);
+    })
   },
 
   logIn({commit}, payload) {
-    commit('setMe', payload);
+    this.$axios.post('http://localhost:3085/user/login', {
+      email: payload.email,
+      password: payload.password,
+    }, {
+      withCredentials: true, // 서로 다른 서버의 포트에서 쿠키를 연동하여 저장함
+    })
+    .then( (data) => {
+      console.log(data);
+      commit('setMe', payload);
+    })
+    .catch( (err) => {
+      console.error(err);
+    })
   },
 
   logOut({commit}, payload) {
