@@ -63,7 +63,7 @@ export const mutations = ({ // 동기적 작업
 });
 
 export const actions = { // 비동기적 작업
-  signUp({commit, state }, payload) {
+  signUp({ commit, state }, payload) {
     this.$axios.post('http://localhost:3085/user', {
       email: payload.email,
       nickname: payload.nickname,
