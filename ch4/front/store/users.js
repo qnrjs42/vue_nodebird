@@ -71,9 +71,8 @@ export const actions = { // 비동기적 작업
     }, {
       withCredentials: true, // 서로 다른 서버의 포트에서 쿠키를 연동하여 저장함
     })
-    .then( (data) => {
-      console.log(data);
-      commit('setMe', payload);
+    .then( (res) => {
+      commit('setMe', res.data);
     })
     .catch( (err) => {
       console.error(err);
@@ -87,9 +86,8 @@ export const actions = { // 비동기적 작업
     }, {
       withCredentials: true, // 서로 다른 서버의 포트에서 쿠키를 연동하여 저장함
     })
-    .then( (data) => {
-      console.log(data);
-      commit('setMe', payload);
+    .then( (res) => {
+      commit('setMe', res.data);
     })
     .catch( (err) => {
       console.error(err);
@@ -97,7 +95,17 @@ export const actions = { // 비동기적 작업
   },
 
   logOut({commit}, payload) {
-    commit('setMe', payload);
+    this.$axios.post('http://localhost:3085/user/logout', { }, {
+      withCredentials: true,
+    })
+
+    .then( (data) => {
+      console.log(data);
+      commit('setMe', null);
+    })
+    .catch( (err) => {
+      console.error(err);
+    })
   },
 
   changeNickname({commit}, payload) {
