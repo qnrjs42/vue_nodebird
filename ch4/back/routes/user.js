@@ -29,7 +29,7 @@ router.post('/', isNotLoggedIn, async (req, res, next) => { // 회원가입
 
     passport.authenticate('local', (err, user, info) => { // 에러, 성공, 실패
       if(err) {
-        console.log(err);
+        console.error(err);
         return next(err);
       }
       if(info) {
@@ -46,16 +46,16 @@ router.post('/', isNotLoggedIn, async (req, res, next) => { // 회원가입
       });
     })(req, res, next);
   } catch(err) {
-    console.log(err);
+    console.error(err);
     return next(err);
   }
 });
 
 
-router.post('/login', isNotLoggedIn, (req, res, next) => {
+router.post('/login',  isNotLoggedIn, (req, res, next) => {
   passport.authenticate('local', (err, user, info) => { // 에러, 성공, 실패
     if(err) {
-      console.log(err);
+      console.error(err);
       return next(err);
     }
     if(info) {
@@ -73,7 +73,7 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
   })(req, res, next);
 });
 
-router.post('/logout', isLoggedIn, (req, res) => {
+router.post('/logout',  isLoggedIn, (req, res) => {
   if(req.isAuthenticated()) { // 로그인이 되어있을 때
     req.logout(); // 로그아웃
     req.session.destroy(); // 세션 제거

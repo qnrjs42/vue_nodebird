@@ -1,7 +1,7 @@
 const express = require('express');
 const { isLoggedIn } = require('./middlewares');
 
-const router = exporess.Router();
+const router = express.Router();
 
 router.post('/images', isLoggedIn, (req, res) => {
 

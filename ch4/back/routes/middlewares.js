@@ -11,7 +11,7 @@ exports.isLoggedIn = (req, res, next) => {
   return res.status(401).send('로그인이 필요합니다.');
 };
 
-exports.isNotLggedIn = (req, res, next) => {
+exports.isNotLoggedIn = (req, res, next) => {
   if(!req.isAuthenticated()) { // 로그인 되어있는지
     return next();
   }
