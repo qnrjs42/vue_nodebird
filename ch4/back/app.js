@@ -9,6 +9,7 @@ const morgan = require('morgan');
 const db = require('./models');
 const passportConfig = require('./passport');
 const userRouter = require('./routes/user');
+const postRouter = require('./routes/post');
 const app = express();
 
 db.sequelize.sync();
@@ -45,11 +46,12 @@ app.get('/', (req, res) => {
 });
 
 app.use('/user', userRouter);
+app.use('/post', postRouter);
 
 
 
 app.post('./post', (req, res) => {
-  if(req.isAuthenticated()) {
+  if(req.isAuthenticated()) { // 로그인 되어있는지
 
   }
 });
