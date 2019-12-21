@@ -9,7 +9,7 @@ const morgan = require('morgan');
 const db = require('./models');
 const passportConfig = require('./passport');
 const userRouter = require('./routes/user');
-//const postRouter = require('./routes/post');
+const postRouter = require('./routes/post');
 const app = express();
 
 db.sequelize.sync();
@@ -20,6 +20,7 @@ app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true,
 }));
+app.use('/', express.static('uploads'));
 /*
   json으로 압축해서 요청
   express는 json을 받으려면 밑 코드를 작성해야함
@@ -46,7 +47,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/user', userRouter);
-//app.use('/post', postRouter);
+app.use('/post', postRouter);
 
 
 

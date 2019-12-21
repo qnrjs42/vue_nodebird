@@ -1,6 +1,7 @@
 export const state = () => ({
   mainPosts: [],
   hasMorePost: true,
+  imagePaths: [],
 });
 
 const totalPosts = 51;
@@ -10,14 +11,17 @@ export const mutations = {
   addMainPost(state, payload) {
     state.mainPosts.unshift(payload);
   },
+
   removeMainPost(state, payload) {
     const index = state.mainPosts.findIndex(v => v.id === payload.id);
     state.mainPosts.splice(index, 1);
   },
+
   addComment(state, payload) {
     const index = state.mainPosts.findIndex(v => v.id === payload.postId);
     state.mainPosts[index].Comments.unshift(payload);
   },
+
   loadPosts(state) {
     const diff = totalPosts - state.mainPosts.length; // 아직 안 불러온 게시글 수
     const fakePosts = Array(diff > limit ? limit : diff).fill().map( v=> ({
@@ -33,6 +37,14 @@ export const mutations = {
     state.mainPosts = state.mainPosts.concat(fakePosts);
     state.hasMorePost = fakePosts.length === limit;
   },
+
+  concatImagePaths(state, payload) { // 이미지 추가하기
+    state.imagePaths = state.imagePaths.concat(payload);
+  },
+
+  removeImagePath(state, payload) { // 이미지 제거하기
+    state.imagePaths.splice(payload, 1);
+  }
 };
 
 export const actions = {
@@ -59,8 +71,8 @@ export const actions = {
     this.$axios.post('http://localhost:3085/post/images', payload, {
       withCredentials: true,
     })
-    .then((res) => {
-
+    .then((res) => { // back의 post에서 받음
+      commit('concatImagePaths', res.data);
     })
     .catch(() => {
 
