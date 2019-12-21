@@ -40,15 +40,30 @@ export const actions = {
     // 서버에 게시글 등록 요청 보냄
     commit('addMainPost', payload);
   },
+
   remove({ commit }, payload) {
     commit('removeMainPost', payload);
   },
+
   addComment({ commit }, payload) {
     commit('addComment', payload);
   },
+
   loadPosts({ commit, state }, payload) {
     if(state.hasMorePost) {
       commit('loadPosts');
     }
   },
+
+  uploadImages({ commit }, payload) {
+    this.$axios.post('http://localhost:3085/post/images', payload, {
+      withCredentials: true,
+    })
+    .then((res) => {
+
+    })
+    .catch(() => {
+
+    })
+  }
 };
