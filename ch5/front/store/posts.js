@@ -18,25 +18,19 @@ export const mutations = {
     state.mainPosts.splice(index, 1);
   },
 
+  loadComments(state, payload) {
+    const index = state.mainPosts.findIndex(v => v.id === payload.postId);
+    state.mainPosts[index].Comments = payload;
+  },
+
   addComment(state, payload) {
     const index = state.mainPosts.findIndex(v => v.id === payload.postId);
     state.mainPosts[index].Comments.unshift(payload);
   },
 
-  loadPosts(state) {
-    const diff = totalPosts - state.mainPosts.length; // 아직 안 불러온 게시글 수
-    const fakePosts = Array(diff > limit ? limit : diff).fill().map( v=> ({
-      id: Math.random().toString(),
-      User: {
-        id: 1,
-        nickname: '제로초',
-      },
-      content: `Hello Infinite Scrolling~ ${Math.random()}`,
-      Comments: [],
-      Images: [],
-    }));
-    state.mainPosts = state.mainPosts.concat(fakePosts);
-    state.hasMorePost = fakePosts.length === limit;
+  loadPosts(state, payload) {
+    state.mainPosts = state.mainPosts.concat(payload);
+    state.hasMorePost = payload.length === limit;
   },
 
   concatImagePaths(state, payload) { // 이미지 추가하기
@@ -71,12 +65,40 @@ export const actions = {
   },
 
   addComment({ commit }, payload) {
-    commit('addComment', payload);
+    this.$axios.post(`http://localhost:3085/posts/${payload.postId}/Comment`, {
+      content: payload:content,
+    }, {
+      withCredentials: true,
+    })
+    .then((res) => {
+      commit('addComment', res.data);
+    })
+    .catch(() => {
+
+    });
+  },
+
+  loadComment({ commit, payload }) {
+    this.$axios.get(`http://localhost:3085/posts/${payload.postId}/Comment`, {
+      content: payload:content,
+    })
+    .then((res) => {
+      commit('loadComments', res.data);
+    })
+    .catch(() => {
+
+    });
   },
 
   loadPosts({ commit, state }, payload) {
     if(state.hasMorePost) {
-      commit('loadPosts');
+      this.$axios.get(`http://localhost:3085/posts?offset=${state.mainPosts.length}&limit=10`)
+        .then(() => {
+          commit('loadPosts', res.data);
+        })
+        .catch(() => {
+
+        });
     }
   },
 

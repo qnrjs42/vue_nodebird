@@ -78,7 +78,14 @@
       onEditPost() {
       },
       onToggleComment() {
+        if(!this.commentOpened) {
+          this.$store.dispatch('posts/loadComments', {
+            postId: this.post.id,
+          });
+        }
+
         this.commentOpened = !this.commentOpened;
+
       },
     },
   };
