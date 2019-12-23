@@ -10,6 +10,7 @@ const limit = 10;
 export const mutations = {
   addMainPost(state, payload) {
     state.mainPosts.unshift(payload);
+    state.imagePaths = [];
   },
 
   removeMainPost(state, payload) {
@@ -50,7 +51,19 @@ export const mutations = {
 export const actions = {
   add({ commit }, payload) {
     // 서버에 게시글 등록 요청 보냄
-    commit('addMainPost', payload);
+    this.$axios.post('http://localhost:3085/post', {
+      content: payload.content,
+      imagePaths: state.imagePaths,
+    }, {
+      withCredentials: true,
+    })
+    .then((res) => {
+      commit('addMainPost', res.data);
+    })
+    .catch(() => {
+
+    });
+
   },
 
   remove({ commit }, payload) {
