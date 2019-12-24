@@ -51,13 +51,12 @@ app.use('/user', userRouter);
 app.use('/post', postRouter);
 app.use('/posts', postsRouter);
 
-
-
 app.post('./post', (req, res) => {
   if(req.isAuthenticated()) { // 로그인 되어있는지
 
   }
 });
+
 
 app.listen(3085, () => {
   console.log(`백엔드 서버 ${3085}번 포트에서 작동중.`);
