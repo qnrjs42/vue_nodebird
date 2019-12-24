@@ -8,7 +8,6 @@ export const state = () => ({
   hasMoreFollowing: true,
 });
 
-
 const totalFollowers = 8;
 const totalFollowings = 6;
 const limit = 3;
@@ -63,6 +62,18 @@ export const mutations = ({ // 동기적 작업
 });
 
 export const actions = { // 비동기적 작업
+  loadUser({ commit }) {
+    this.$axios.get('http://localhost:3085/user', {
+      withCredentials: true,
+    })
+    .then((res) => {
+      commit('setMe', res.data);
+    })
+    .catch(() => {
+
+    })
+  },
+
   signUp({ commit, state }, payload) {
     this.$axios.post('http://localhost:3085/user', {
       email: payload.email,

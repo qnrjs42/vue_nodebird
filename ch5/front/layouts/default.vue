@@ -28,9 +28,7 @@
         </v-toolbar>
       </nav>
       <div>
-        <!--{{name}}-->
       </div>
-      <!-- <v-btn @click="onChangeName">바이바이</v-btn> -->
       <v-row no-gutters>
         <v-col col="12" md="4">
           <login-form />
@@ -50,11 +48,6 @@
     components: {
       LoginForm,
     },
-    // computed: {
-    //   name() {
-    //     return this.$store.state.posts.name;
-    //   }
-    // },
     data() {
       return {
         hashtag: '',
@@ -62,10 +55,6 @@
     },
 
     methods: {
-      // onChangeName() {
-      //   this.$store.commit('posts/bye');
-      // },
-
       onSearchHashtag() {
         this.$router.push({
           path: `/hashtag/${this.hashtag}`,

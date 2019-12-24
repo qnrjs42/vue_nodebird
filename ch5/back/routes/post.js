@@ -54,6 +54,20 @@ router.post('/', isLoggedIn, async (req, res) => { // POST /post 게시물 작�
   }
 });
 
+router.delete('/:id', async (req, res, next) => {
+  try {
+    await db.Post.destroy({
+      where: {
+        id: req.params.id,
+      }
+    });
+    res.send('삭제했습니다.');    
+  } catch(err) {
+    console.error(erro);
+    next(err);
+  }
+});
+
 router.get('/:id/comments', async (req, res, next) => {
   try {
     // 존재하지 않는 게시글에 댓글 남기는걸 방지

@@ -72,10 +72,11 @@
     methods: {
       onRemovePost() {
         this.$store.dispatch('posts/remove', {
-          id: this.post.id,
+          postId: this.post.id,
         });
       },
       onEditPost() {
+
       },
       onToggleComment() {
         if(!this.commentOpened) {

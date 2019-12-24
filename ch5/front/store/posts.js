@@ -8,32 +8,32 @@ const totalPosts = 51;
 const limit = 10;
 
 export const mutations = {
-  addMainPost(state, payload) {
+  addMainPost(state, payload) { // 게시글 작성
     state.mainPosts.unshift(payload);
     state.imagePaths = [];
   },
 
-  removeMainPost(state, payload) {
-    const index = state.mainPosts.findIndex(v => v.id === payload.id);
+  removeMainPost(state, payload) { // 게시글 삭제
+    const index = state.mainPosts.findIndex(v => v.id === payload.postId);
     state.mainPosts.splice(index, 1);
   },
 
-  loadComments(state, payload) {
+  loadComments(state, payload) { // 게시글의 댓글 불러오기
     const index = state.mainPosts.findIndex(v => v.id === payload.postId);
     state.mainPosts[index].Comments = payload;
   },
 
-  addComment(state, payload) {
+  addComment(state, payload) { // 게시글의 댓글 작성
     const index = state.mainPosts.findIndex(v => v.id === payload.postId);
     state.mainPosts[index].Comments.unshift(payload);
   },
 
-  loadPosts(state, payload) {
+  loadPosts(state, payload) { // 게시글 불러오기
     state.mainPosts = state.mainPosts.concat(payload);
     state.hasMorePost = payload.length === limit;
   },
 
-  concatImagePaths(state, payload) { // 이미지 추가하기
+  concatImagePaths(state, payload) { // 이미지 넣었는데 또 추가할 때
     state.imagePaths = state.imagePaths.concat(payload);
   },
 
@@ -61,12 +61,20 @@ export const actions = {
   },
 
   remove({ commit }, payload) {
-    commit('removeMainPost', payload);
+    this.$axios.delete(`http://localhost:3085/post/${payload.postId}`, {
+      withCredentials: true,
+    })
+    .then(() => {
+      commit('removeMainPost', payload.postId);
+    })
+    .catch(() => {
+
+    });
   },
 
   addComment({ commit }, payload) {
-    this.$axios.post(`http://localhost:3085/posts/${payload.postId}/Comment`, {
-      content: payload:content,
+    this.$axios.post(`http://localhost:3085/post/${payload.postId}/Comment`, {
+      content: payload.content,
     }, {
       withCredentials: true,
     })
@@ -80,7 +88,7 @@ export const actions = {
 
   loadComment({ commit, payload }) {
     this.$axios.get(`http://localhost:3085/posts/${payload.postId}/Comment`, {
-      content: payload:content,
+      content: payload.content,
     })
     .then((res) => {
       commit('loadComments', res.data);
