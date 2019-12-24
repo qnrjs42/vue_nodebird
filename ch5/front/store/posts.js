@@ -20,7 +20,7 @@ export const mutations = {
 
   loadComments(state, payload) { // 게시글의 댓글 불러오기
     const index = state.mainPosts.findIndex(v => v.id === payload.postId);
-    state.mainPosts[index].Comments = payload;
+    Vue.set(state.mainPosts[index], 'Comments', payload.data);
   },
 
   addComment(state, payload) { // 게시글의 댓글 작성
@@ -29,8 +29,12 @@ export const mutations = {
   },
 
   loadPosts(state, payload) { // 게시글 불러오기
-    state.mainPosts = state.mainPosts.concat(payload);
-    state.hasMorePost = payload.length === limit;
+    if (payload.reset) {
+      state.mainPosts = payload.data;
+    } else {
+      state.mainPosts = state.mainPosts.concat(payload.data);
+    }
+    state.hasMorePost = payload.data.length === 10;
   },
 
   concatImagePaths(state, payload) { // 이미지 넣었는데 또 추가할 때
@@ -43,7 +47,7 @@ export const mutations = {
 };
 
 export const actions = {
-  add({ commit }, payload) {
+  add({ commit, state }, payload) {
     // 서버에 게시글 등록 요청 보냄
     this.$axios.post('http://localhost:3085/post', {
       content: payload.content,
