@@ -1,7 +1,5 @@
 const express = require('express');
-
 const db = require('../models');
-const { isLoggedIn } = require('./middlewares');
 
 const router = express.Router();
 
@@ -11,6 +9,8 @@ router.get('/', async (req, res, next) => { // 게시글 여러개
       include: [{
         model: db.User,
         attributes: ['id', 'nickname'],
+      }, {
+        model: db.Image,
       }],
       order: [['createdAt', 'DESC']],
       offset: parseInt(req.query.offset, 10) || 0,
