@@ -37,7 +37,7 @@
     },
 
     fetch({ store }) { // 컴포넌트가 화면에 보여주기 전에
-      store.dispatch('posts/loadPosts');
+      return store.dispatch('posts/loadPosts', { reset: true });
     },
 
     mounted() { // created()는 window에 접근 못함

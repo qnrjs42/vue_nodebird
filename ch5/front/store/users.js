@@ -62,20 +62,19 @@ export const mutations = ({ // 동기적 작업
 });
 
 export const actions = { // 비동기적 작업
-  loadUser({ commit }) {
-    this.$axios.get('http://localhost:3085/user', {
-      withCredentials: true,
-    })
-    .then((res) => {
+  async loadUser({ commit }) {
+    try {
+      const res = await this.$axios.get('/user', {
+        withCredentials: true,
+      });
       commit('setMe', res.data);
-    })
-    .catch(() => {
-
-    })
+    } catch (err) {
+      console.error(err);
+    }
   },
 
   signUp({ commit, state }, payload) {
-    this.$axios.post('http://localhost:3085/user', {
+    this.$axios.post('/user', {
       email: payload.email,
       nickname: payload.nickname,
       password: payload.password,
@@ -91,7 +90,7 @@ export const actions = { // 비동기적 작업
   },
 
   logIn({commit}, payload) {
-    this.$axios.post('http://localhost:3085/user/login', {
+    this.$axios.post('/user/login', {
       email: payload.email,
       password: payload.password,
     }, {
@@ -106,7 +105,7 @@ export const actions = { // 비동기적 작업
   },
 
   logOut({commit}, payload) {
-    this.$axios.post('http://localhost:3085/user/logout', { }, {
+    this.$axios.post('/user/logout', { }, {
       withCredentials: true,
     })
 

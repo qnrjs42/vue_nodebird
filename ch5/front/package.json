@@ -24,5 +24,10 @@
     "eslint-plugin-vue": "^6.0.1"
   },
   "main": "nuxt.config.js",
-  "license": "ISC"
+  "license": "ISC",
+  "config": {
+    "nuxt": {
+      "port": 3080
+    }
+  }
 }

@@ -1,3 +1,5 @@
+import Vue from 'vue';
+
 export const state = () => ({
   mainPosts: [],
   hasMorePost: true,
@@ -29,12 +31,14 @@ export const mutations = {
   },
 
   loadPosts(state, payload) { // 게시글 불러오기
-    if (payload.reset) {
-      state.mainPosts = payload.data;
-    } else {
-      state.mainPosts = state.mainPosts.concat(payload.data);
-    }
-    state.hasMorePost = payload.data.length === 10;
+    state.mainPosts = state.mainPosts.concat(payload.data);
+    state.hasMorePost = payload.length === limit;
+    // if (payload.reset) {
+    //   state.mainPosts = payload.data;
+    // } else {
+    //   state.mainPosts = state.mainPosts.concat(payload.data);
+    // }
+    // state.hasMorePost = payload.data.length === 10;
   },
 
   concatImagePaths(state, payload) { // 이미지 넣었는데 또 추가할 때
@@ -49,7 +53,7 @@ export const mutations = {
 export const actions = {
   add({ commit, state }, payload) {
     // 서버에 게시글 등록 요청 보냄
-    this.$axios.post('http://localhost:3085/post', {
+    this.$axios.post('/post', {
       content: payload.content,
       image: state.imagePaths,
     }, {
@@ -65,7 +69,7 @@ export const actions = {
   },
 
   remove({ commit }, payload) {
-    this.$axios.delete(`http://localhost:3085/post/${payload.postId}`, {
+    this.$axios.delete(`/post/${payload.postId}`, {
       withCredentials: true,
     })
     .then(() => {
@@ -77,7 +81,7 @@ export const actions = {
   },
 
   addComment({ commit }, payload) {
-    this.$axios.post(`http://localhost:3085/post/${payload.postId}/Comment`, {
+    this.$axios.post(`/post/${payload.postId}/Comment`, {
       content: payload.content,
     }, {
       withCredentials: true,
@@ -91,7 +95,7 @@ export const actions = {
   },
 
   loadComment({ commit, payload }) {
-    this.$axios.get(`http://localhost:3085/posts/${payload.postId}/Comment`, {
+    this.$axios.get(`/post/${payload.postId}/Comments`, {
       content: payload.content,
     })
     .then((res) => {
@@ -104,7 +108,7 @@ export const actions = {
 
   loadPosts({ commit, state }, payload) {
     if(state.hasMorePost) {
-      this.$axios.get(`http://localhost:3085/posts?offset=${state.mainPosts.length}&limit=10`)
+      this.$axios.get(`/posts?offset=${state.mainPosts.length}&limit=10`)
         .then(() => {
           commit('loadPosts', res.data);
         })
@@ -115,7 +119,7 @@ export const actions = {
   },
 
   uploadImages({ commit }, payload) {
-    this.$axios.post('http://localhost:3085/post/images', payload, {
+    this.$axios.post('/post/images', payload, {
       withCredentials: true,
     })
     .then((res) => { // back의 post에서 받음
