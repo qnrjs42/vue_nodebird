@@ -40,11 +40,27 @@ router.post('/', isLoggedIn, async (req, res) => { // POST /post 게시물 작�
       })));
       await newPost.addHashtags(result.map(r => r[0]));
     }
+    if(req.body.image) {
+      /*
+        Array.isArray()로 감싸는 이유
+        하나여도 배열로 감싸줘야하는데 일반 텍스트로 넘겨줘서 일관성이 안 맞음
+        그래서 하나여도 배열로 감싸줌
+      */
+      if(Array.isArray(req.body.image)) {
+        const images = await Promise.all(req.body.image.map((image) => {
+          return db.Image.create({ src: image, PostId: newPost.id });
+        }));
+      } else {
+        const image = await db.Image.create({ src: req.body.image, PostId: newPost.id });
+      }
+    }
     const fullPost = await db.Post.findOne({
       where: { id: newPost.id },
       include: [{
         model: db.User,
         attributes: ['id', 'nickname'],
+      }, {
+        model: db.Image,
       }],
     });
     return res.json(fullPost);
@@ -61,7 +77,7 @@ router.delete('/:id', async (req, res, next) => {
         id: req.params.id,
       }
     });
-    res.send('삭제했습니다.');    
+    res.send('삭제했습니다.');
   } catch(err) {
     console.error(erro);
     next(err);
