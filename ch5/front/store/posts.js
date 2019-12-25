@@ -47,7 +47,24 @@ export const mutations = {
 
   removeImagePath(state, payload) { // 이미지 제거하기
     state.imagePaths.splice(payload, 1);
-  }
+  },
+
+  unlikePost(state, payload) {
+    // 게시글 먼저 찾기
+    const index = state.mainPosts.findIndex(v => v.id === payload.postId);
+    // 좋아요한 사람들 목록 중에 내 아이디 제거
+    const userIndex =state.mainPosts[index].Likers.findIndex(v => v.id === payload.postId);
+    state.mainPosts[index].Likers.splice(userIndex, 1);
+  },
+
+  likePost(state, payload) {
+    // 게시글 먼저 찾기
+    const index = state.mainPosts.findIndex(v => v.id === payload.postId);
+    // 좋아요한 사람들 목록 중에 내 아이디 추가
+    state.mainPosts[index].Likers.push({
+      id: payload.userId,
+    });
+  },
 };
 
 export const actions = {
@@ -62,8 +79,8 @@ export const actions = {
     .then((res) => {
       commit('addMainPost', res.data);
     })
-    .catch(() => {
-
+    .catch((err) => {
+      console.error(err);
     });
 
   },
@@ -75,8 +92,8 @@ export const actions = {
     .then(() => {
       commit('removeMainPost', payload.postId);
     })
-    .catch(() => {
-
+    .catch((err) => {
+      console.error(err);
     });
   },
 
@@ -89,8 +106,8 @@ export const actions = {
     .then((res) => {
       commit('addComment', res.data);
     })
-    .catch(() => {
-
+    .catch((err) => {
+      console.error(err);
     });
   },
 
@@ -101,8 +118,8 @@ export const actions = {
     .then((res) => {
       commit('loadComments', res.data);
     })
-    .catch(() => {
-
+    .catch((err) => {
+      console.error(err);
     });
   },
 
@@ -112,8 +129,8 @@ export const actions = {
         .then(() => {
           commit('loadPosts', res.data);
         })
-        .catch(() => {
-
+        .catch((err) => {
+          console.error(err);
         });
     }
   },
@@ -125,8 +142,51 @@ export const actions = {
     .then((res) => { // back의 post에서 받음
       commit('concatImagePaths', res.data);
     })
-    .catch(() => {
+    .catch((err) => {
+      console.error(err);
+    });
+  },
 
+  retweet({ commit }, payload) {
+    this.$axios.post(`/post/${payload.postId}/retweet`, {}, {
+      withCredentials: true,
     })
-  }
+    .then((res) => { // 리트윗한 원본 게시글 정보 포함
+      commit('addMainPost', res.data);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  },
+
+  likePost({ commit }, payload) {
+    this.$axios.post(`/post/${payload.postId}/like`, {}, {
+      withCredentials: true,
+    })
+    .then((res) => {
+      commit('likePost', {
+        userId: res.data.userId,
+        postId: payload.postId,
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  },
+
+  unlikePost({ commit }, payload) { // delete는 post와 달리 두번째 데이터가 없음
+    this.$axios.delete(`/post/${payload.postId}/like`, {
+      withCredentials: true,
+    })
+    .then((res) => {
+      commit('unlikePost', {
+        userId: res.data.userId,
+        postId: payload.postId,
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  },
+
 };
