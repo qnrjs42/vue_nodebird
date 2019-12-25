@@ -192,10 +192,13 @@ router.post('/:id/retweet', isLoggedIn, async (req, res, next) => {
         model: db.User,
         attributes: ['id', 'nickname'],
       }, {
+<<<<<<< HEAD
         model: db.User, // 좋아요 누른 사람 목록
         as: 'Likers',
         attributes: ['id'], // 좋아요 누른 사람 아이디
       }, {
+=======
+>>>>>>> 79985d4d9e438fea0da6a91522b71517109a22a3
         model: db.Post, // 원본 글
         as: 'Retweet', // 원본 글
         include: [{ // 원본 글 작성자

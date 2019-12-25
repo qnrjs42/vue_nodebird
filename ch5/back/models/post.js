@@ -18,7 +18,11 @@ module.exports = (sequelize, DataTypes) => {
       as: 'Likers'
     });
 
+<<<<<<< HEAD
     db.Post.belongsTo(db.Post, { as: 'Retweet' }); // 리트윗
+=======
+    db.Post.belongsTo(db.Post, { as: 'Retwwet' }); // 리트윗
+>>>>>>> 79985d4d9e438fea0da6a91522b71517109a22a3
     db.Post.belongsToMany(db.Hashtag, { through: 'PostHashtag' });
   };
 
