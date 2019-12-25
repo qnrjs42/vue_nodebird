@@ -69,7 +69,7 @@ export const actions = { // 비동기적 작업
       });
       commit('setMe', res.data);
     } catch (err) {
-      console.error(err);
+      console.error(err );
     }
   },
 
@@ -134,11 +134,13 @@ export const actions = { // 비동기적 작업
   removeFollower({commit}, payload) {
     commit('removeFollower', payload);
   },
+
   loadFollowers({commit, state}, payload) {
     if(state.hasMoreFollower) {
       commit('loadFollowers');
     }
   },
+
   loadFollowings({commit, state}, payload) {
     if(state.hasMoreFollowing) {
       commit('loadFollowings');

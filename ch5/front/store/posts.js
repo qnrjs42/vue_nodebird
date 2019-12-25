@@ -145,7 +145,6 @@ export const actions = {
     .catch((err) => {
       console.error(err);
     });
-<<<<<<< HEAD
   },
 
   retweet({ commit }, payload) {
@@ -189,8 +188,4 @@ export const actions = {
       console.error(err);
     });
   },
-
-=======
-  }
->>>>>>> 79985d4d9e438fea0da6a91522b71517109a22a3
 };
