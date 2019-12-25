@@ -62,8 +62,8 @@ export const actions = {
     .then((res) => {
       commit('addMainPost', res.data);
     })
-    .catch(() => {
-
+    .catch((err) => {
+      console.error(err);
     });
 
   },
@@ -75,8 +75,8 @@ export const actions = {
     .then(() => {
       commit('removeMainPost', payload.postId);
     })
-    .catch(() => {
-
+    .catch((err) => {
+      console.error(err);
     });
   },
 
@@ -89,8 +89,8 @@ export const actions = {
     .then((res) => {
       commit('addComment', res.data);
     })
-    .catch(() => {
-
+    .catch((err) => {
+      console.error(err);
     });
   },
 
@@ -101,8 +101,8 @@ export const actions = {
     .then((res) => {
       commit('loadComments', res.data);
     })
-    .catch(() => {
-
+    .catch((err) => {
+      console.error(err);
     });
   },
 
@@ -112,8 +112,8 @@ export const actions = {
         .then(() => {
           commit('loadPosts', res.data);
         })
-        .catch(() => {
-
+        .catch((err) => {
+          console.error(err);
         });
     }
   },
@@ -125,8 +125,8 @@ export const actions = {
     .then((res) => { // back의 post에서 받음
       commit('concatImagePaths', res.data);
     })
-    .catch(() => {
-
-    })
+    .catch((err) => {
+      console.error(err);
+    });
   }
 };

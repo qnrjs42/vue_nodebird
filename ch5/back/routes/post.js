@@ -70,6 +70,7 @@ router.post('/', isLoggedIn, async (req, res) => { // POST /post 게시물 작�
   }
 });
 
+// 게시글 지우기
 router.delete('/:id', async (req, res, next) => {
   try {
     await db.Post.destroy({
@@ -79,11 +80,12 @@ router.delete('/:id', async (req, res, next) => {
     });
     res.send('삭제했습니다.');
   } catch(err) {
-    console.error(erro);
+    console.error(err);
     next(err);
   }
 });
 
+// 댓글 남기기
 router.get('/:id/comments', async (req, res, next) => {
   try {
     // 존재하지 않는 게시글에 댓글 남기는걸 방지
@@ -138,6 +140,104 @@ router.post('/:id/comment', isLoggedIn, async (req, res, next) => {
     return res.json(comment);
 
   } catch(err) {
+    console.error(err);
+    next(err);
+  }
+});
+
+// 리트윗
+router.post('/:id/retweet', isLoggedIn, async (req, res, next) => {
+  try {
+    const post = await db.Post.findOne({ // 내가 리트윗한 게시글 있는지
+      where: { id: req.params.id },
+      include: [{
+        model: db.Post,
+        as: 'Retweet', // 리트윗한 게시글이면 원본 게시글이 됨
+      }],
+    });
+    if(!post) {
+      return res.status(404).send('포스트가 존재하지 않습니다.');
+    }
+    // 자신의 글을 리트윗하는 경우 방지
+    if(req.user.id === post.UserId ||
+       (post.Retweet && post.Retweet.UserId) === req.user.id) {
+        return res.status(403).send('자신의 글은 리트윗할 수 없습니다.');
+    }
+    const retweetTargetId = post.RetweetId || post.id;
+    const exPost = await db.Post.findOne({
+      where: {
+        UserId: req.user.id,
+        RetweetId: retweetTargetId,
+      },
+    });
+
+    if(exPost) { // 이미 리트윗한 경우
+      return res.status(403).send('이미 리트윗했습니다.');
+    }
+    const retweet = await db.Post.create({ // 리트윗 게시글 등록
+        UserId: req.user.id,
+        RetweetId: retweetTargetId, // 원본 아이디
+        content: 'retweet',
+    });
+
+    // 리트윗한 게시글을 바로 띄워주면 원본의 글, 작성자, 이미지가 로드가 안 되기때문에
+    // 리트윗을 하고 db에서 글 정보를 가져온다음에 띄워줘야함
+    const retweetWithPrevPost = await db.Post.findOne({
+      where: { id: retweet.id },
+      include: [{
+        model: db.User,
+        attributes: ['id', 'nickname'],
+      }, {
+        model: db.Post, // 원본 글
+        as: 'Retweet', // 원본 글
+        include: [{ // 원본 글 작성자
+          model: db.User,
+          attributes: ['id', 'nickname'],
+        }, {
+          model: db.Image, // 원본 글 이미지
+        }]
+
+      }]
+    });
+    res.json(retweetWithPrevPost);
+
+  } catch(err) {
+    console.error(err);
+    next(err);
+  }
+});
+
+// 좋아요
+router.post('/:id/like', isLoggedIn, async (req, res, next) => {
+  try {
+    // 좋아요 누르기 전에 포스트가 있는지 먼저 체크
+    const post = await db.Post.findOne({ where: { id: req.params.id }});
+    if(!post) {
+      return res.status(404).send('포스트가 존재하지 않습니다.');
+    }
+    // 게시글에 좋아요 누르면 내 아이디가 추가 됨
+    await post.addLiker(req.user.id);
+    res.json({ userId: req.user.id });
+
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
+// 좋아요 취소
+router.delete('/:id/like', isLoggedIn, async (req, res, next) => {
+  try {
+    // 좋아요 취소 누르기 전에 포스트가 있는지 먼저 체크
+    const post = await db.Post.findOne({ where: { id: req.params.id }});
+    if(!post) {
+      return res.status(404).send('포스트가 존재하지 않습니다.');
+    }
+    // 게시글에 좋아요 취소 누르면 내 아이디가 빼짐
+    await post.removeLiker(req.user.id);
+    res.json({ userId: req.user.id });
+
+  } catch (err) {
     console.error(err);
     next(err);
   }
