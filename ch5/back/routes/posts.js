@@ -7,22 +7,27 @@ router.get('/', async (req, res, next) => { // 게시글 여러개
   try {
     const posts = await db.Post.findAll({
       include: [{
-        model: db.User, // 게시글 작성자
-        attributes: ['id', 'nickname'], // 작성자의 아이디와 닉네임
+        // 게시글 작성자의 아이디와 닉네임
+        model: db.User,
+        attributes: ['id', 'nickname'],
       }, {
-        model: db.Image, // 게시글 이미지
+        // 게시글 이미지
+        model: db.Image,
       }, {
-        model: db.User, // 좋아요 누른 사람 목록
+        // 좋아요 누른 사람 목록 중 아이디
+        model: db.User,
         as: 'Likers',
-        attributes: ['id'], // 좋아요 누른 사람 아이디
+        attributes: ['id'],
       }, {
-        model: db.Post, // 리트윗한 원본
+        // 리트윗한 원본 정보: 작성자의 아이디와 닉네임
+        model: db.Post,
         as: 'Retweet',
         include: [{
-          model: db.User, // 원본 작성자
-          attributes: ['id', 'nickname'], // 원본 작성자의 아이디와 닉네임
+          model: db.User,
+          attributes: ['id', 'nickname'],
         }, {
-          model: db.Image, // 원본 이미지
+          // 리트윗한 원본 이미지
+          model: db.Image,
         }],
       }],
       order: [['createdAt', 'DESC']],

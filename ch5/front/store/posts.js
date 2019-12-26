@@ -31,6 +31,7 @@ export const mutations = {
   },
 
   loadPosts(state, payload) { // 게시글 불러오기
+    console.log('mutations의 loadPosts 시작');
     state.mainPosts = state.mainPosts.concat(payload.data);
     state.hasMorePost = payload.length === limit;
     // if (payload.reset) {
@@ -39,6 +40,7 @@ export const mutations = {
     //   state.mainPosts = state.mainPosts.concat(payload.data);
     // }
     // state.hasMorePost = payload.data.length === 10;
+    console.log('mutations의 loadPosts 끝');
   },
 
   concatImagePaths(state, payload) { // 이미지 넣었는데 또 추가할 때
@@ -111,7 +113,7 @@ export const actions = {
     });
   },
 
-  loadComment({ commit, payload }) {
+  loadComment({ commit }, payload) {
     this.$axios.get(`/post/${payload.postId}/Comments`, {
       content: payload.content,
     })
@@ -123,15 +125,18 @@ export const actions = {
     });
   },
 
-  loadPosts({ commit, state }, payload) {
+  loadPosts({ commit, state }, payload ) {
     if(state.hasMorePost) {
+      console.log('actions loadPosts의 if 속');
       this.$axios.get(`/posts?offset=${state.mainPosts.length}&limit=10`)
-        .then(() => {
-          commit('loadPosts', res.data);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+      .then((res) => {
+        console.log('actions loadPosts res.data');
+        console.log(res.data);
+        commit('loadPosts', res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
     }
   },
 
@@ -156,6 +161,7 @@ export const actions = {
     })
     .catch((err) => {
       console.error(err);
+      alert(err.response.data);
     });
   },
 

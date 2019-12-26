@@ -19,7 +19,7 @@
         <v-btn type="button" @click="onClickImageUpload">이미지 업로드</v-btn>
         <div>
           <div v-for="(p, i) in imagePaths" :key="p" style="display: inline-block">
-            <img :src="`http://localhost:3085/${p}`" :alt="p" style="width: 200px">
+            <img :src="`/${p}`" :alt="p" style="width: 200px">
             <div>
               <button @click="onRemoveImage(i)" type="button">제거</button>
             </div>
@@ -32,6 +32,7 @@
 
 <script>
   import { mapState } from 'vuex';
+
   export default {
     data() {
       return {
@@ -65,7 +66,8 @@
               this.success = true;
               this.successMessages = '게시글 등록 성공!';
             })
-            .catch(() => {
+            .catch((err) => {
+              console.error(err);
             });
         }
       },
