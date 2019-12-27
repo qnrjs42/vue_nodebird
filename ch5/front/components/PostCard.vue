@@ -83,9 +83,11 @@
           postId: this.post.id,
         });
       },
+
       onEditPost() {
 
       },
+
       onToggleComment() {
         if(!this.commentOpened) {
           this.$store.dispatch('posts/loadComments', {

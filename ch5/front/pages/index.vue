@@ -37,7 +37,7 @@
     },
 
     fetch({ store }) { // 컴포넌트가 화면에 보여주기 전에
-      console.log('pages/index/fetch');
+      console.log('pages/index/fetch23455');
       return store.dispatch('posts/loadPosts');
     },
 
